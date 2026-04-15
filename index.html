@@ -8,35 +8,34 @@
 </head>
 <body>
 
-  <div class="app">
-    <h2>🧠 Kids Math Game</h2>
+<div class="app">
 
-    <div class="stats">
-      <div id="score">⭐ 0</div>
-      <div id="timer">⏱ 20</div>
-      <div id="lives">❤️ 5</div>
-    </div>
+  <h2>🧠 Kids Math Game</h2>
 
-    <div class="card">
-      <div id="question">Press Start</div>
-
-      <input type="number" step="0.1" id="answer" placeholder="Answer">
-
-      <div class="buttons">
-        <button onclick="startGame()">Start</button>
-        <button onclick="checkAnswer()">Submit</button>
-      </div>
-
-      <div id="message"></div>
-
-      <div id="gameOverBox">
-        <h3 id="finalScore"></h3>
-        <button onclick="restartGame()">🔁 New Game Start</button>
-      </div>
-
-    </div>
+  <div class="stats">
+    <div id="score">⭐ 0</div>
+    <div id="timer">⏱ 20</div>
+    <div id="lives">❤️ 5</div>
   </div>
 
-  <script src="script.js"></script>
+  <div id="question">Press Start</div>
+
+  <input type="number" step="0.1" id="answer" placeholder="Type Answer">
+
+  <div class="buttons">
+    <button onclick="startGame()">▶ Start</button>
+    <button onclick="checkAnswer()">✔ Submit</button>
+  </div>
+
+  <div id="message"></div>
+
+  <div id="gameOverBox">
+    <h3 id="finalScore"></h3>
+    <button onclick="restartGame()">🔁 New Game</button>
+  </div>
+
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
