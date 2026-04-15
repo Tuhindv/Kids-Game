@@ -5,9 +5,8 @@ let lives = 5;
 let timer;
 let time = 20;
 let correctAnswer = 0;
-let gameActive = true;
 
-// 💬 MESSAGE
+// 💬 MESSAGE (WOW FIX)
 function showMessage(text, color, big = false) {
   const msg = document.getElementById("message");
 
@@ -22,41 +21,30 @@ function showMessage(text, color, big = false) {
   msg.clearTimer = setTimeout(() => {
     msg.innerText = "";
     msg.classList.remove("wow");
-  }, 2500);
+  }, 1200);
 }
 
 // ▶ START GAME
 function startGame() {
   score = 0;
   lives = 5;
-  gameActive = true;
 
   document.getElementById("score").innerText = "⭐ 0";
   document.getElementById("lives").innerText = "❤️ 5";
   document.getElementById("gameOverBox").style.display = "none";
 
-  nextQuestion();
-}
-
-// 🔁 NEXT QUESTION
-function nextQuestion() {
-  if (!gameActive) return;
   newQuestion();
   startTimer();
 }
 
-// ⏱ TIMER
+// ⏱ TIMER (SYNC)
 function startTimer() {
-  if (!gameActive) return;
-
   clearInterval(timer);
   time = 20;
 
   document.getElementById("timer").innerText = "⏱ " + time;
 
   timer = setInterval(() => {
-    if (!gameActive) return;
-
     time--;
     document.getElementById("timer").innerText = "⏱ " + time;
 
@@ -66,6 +54,8 @@ function startTimer() {
 
 // 🧠 QUESTION
 function newQuestion() {
+  document.getElementById("message").innerText = "";
+
   num1 = Math.floor(Math.random() * 10) + 1;
   num2 = Math.floor(Math.random() * 10) + 1;
 
@@ -88,7 +78,7 @@ function newQuestion() {
 
 // 🎊 CONFETTI
 function launchConfetti() {
-  for (let i = 0; i < 35; i++) {
+  for (let i = 0; i < 40; i++) {
     const c = document.createElement("div");
     c.classList.add("confetti");
 
@@ -99,14 +89,13 @@ function launchConfetti() {
     c.style.animationDuration = (Math.random() * 2 + 1) + "s";
 
     document.body.appendChild(c);
+
     setTimeout(() => c.remove(), 3000);
   }
 }
 
-// ✅ CHECK ANSWER
+// ✅ CHECK ANSWER (WOW + 3 SEC FLOW)
 function checkAnswer() {
-  if (!gameActive) return;
-
   const userAns = parseFloat(document.getElementById("answer").value);
 
   if (userAns === correctAnswer) {
@@ -116,7 +105,10 @@ function checkAnswer() {
     showMessage("🎉 EXCELLENT!", "green", true);
     launchConfetti();
 
-    setTimeout(() => nextQuestion(), 800);
+    setTimeout(() => {
+      newQuestion();
+      startTimer();
+    }, 800);
 
   } else {
     lives--;
@@ -128,15 +120,17 @@ function checkAnswer() {
       showMessage("✔ Correct Answer: " + correctAnswer, "blue");
     }, 600);
 
-    setTimeout(() => nextQuestion(), 2500);
+    setTimeout(() => {
+      newQuestion();
+      startTimer();
+    }, 2500);
 
     if (lives === 0) gameOver();
   }
 }
 
-// 💔 GAME OVER (FULL STOP FIX)
+// 💔 GAME OVER (STOP)
 function gameOver() {
-  gameActive = false;
   clearInterval(timer);
 
   document.getElementById("question").innerText = "Game Over 💔";
@@ -144,4 +138,9 @@ function gameOver() {
 
   document.getElementById("finalScore").innerText =
     "🏆 FINAL SCORE: " + score;
+}
+
+// 🔁 RESTART
+function restartGame() {
+  startGame();
 }
