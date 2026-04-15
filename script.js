@@ -5,16 +5,20 @@ let lives = 5;
 let timer;
 let time = 20;
 let correctAnswer = 0;
+let gameActive = false;
 
-// 💬 MESSAGE (WOW FIX)
+// 💬 MESSAGE (WOW support)
 function showMessage(text, color, big = false) {
   const msg = document.getElementById("message");
 
   msg.innerText = text;
   msg.style.color = color;
 
-  if (big) msg.classList.add("wow");
-  else msg.classList.remove("wow");
+  if (big) {
+    msg.classList.add("wow");
+  } else {
+    msg.classList.remove("wow");
+  }
 
   clearTimeout(msg.clearTimer);
 
@@ -28,47 +32,64 @@ function showMessage(text, color, big = false) {
 function startGame() {
   score = 0;
   lives = 5;
+  gameActive = true;
+
+  clearInterval(timer);
 
   document.getElementById("score").innerText = "⭐ 0";
   document.getElementById("lives").innerText = "❤️ 5";
   document.getElementById("gameOverBox").style.display = "none";
+  document.getElementById("message").innerText = "";
 
   newQuestion();
   startTimer();
 }
 
-// ⏱ TIMER (SYNC)
+// ⏱ TIMER (FIXED - NO NEGATIVE BUG)
 function startTimer() {
   clearInterval(timer);
-  time = 20;
 
+  time = 20;
   document.getElementById("timer").innerText = "⏱ " + time;
 
   timer = setInterval(() => {
+
+    if (!gameActive) {
+      clearInterval(timer);
+      return;
+    }
+
     time--;
+
+    if (time <= 0) {
+      clearInterval(timer);
+      time = 0;
+      document.getElementById("timer").innerText = "⏱ 0";
+      loseLife();
+      return;
+    }
+
     document.getElementById("timer").innerText = "⏱ " + time;
 
-    if (time === 0) loseLife();
   }, 1000);
 }
 
-// 🧠 QUESTION
+// 🧠 NEW QUESTION
 function newQuestion() {
+
+  clearInterval(timer); // IMPORTANT FIX
+
   document.getElementById("message").innerText = "";
 
   num1 = Math.floor(Math.random() * 10) + 1;
   num2 = Math.floor(Math.random() * 10) + 1;
 
-  const ops = ['+', '-', '*', '/'];
+  const ops = ['+', '-', '*'];
   operator = ops[Math.floor(Math.random() * ops.length)];
 
   if (operator === '+') correctAnswer = num1 + num2;
   if (operator === '-') correctAnswer = num1 - num2;
   if (operator === '*') correctAnswer = num1 * num2;
-
-  if (operator === '/') {
-    correctAnswer = Math.floor((num1 / num2) * 10) / 10;
-  }
 
   document.getElementById("question").innerText =
     `${num1} ${operator} ${num2}`;
@@ -76,9 +97,34 @@ function newQuestion() {
   document.getElementById("answer").value = "";
 }
 
+// ❌ LOSE LIFE
+function loseLife() {
+
+  lives--;
+  document.getElementById("lives").innerText = "❤️ " + lives;
+
+  if (lives <= 0) {
+    gameOver();
+    return;
+  }
+
+  showMessage("❌ Wrong!", "red");
+
+  setTimeout(() => {
+    showMessage("✔ Correct: " + correctAnswer, "blue");
+  }, 600);
+
+  setTimeout(() => {
+    newQuestion();
+    startTimer();
+  }, 2000);
+}
+
 // 🎊 CONFETTI
 function launchConfetti() {
-  for (let i = 0; i < 40; i++) {
+
+  for (let i = 0; i < 30; i++) {
+
     const c = document.createElement("div");
     c.classList.add("confetti");
 
@@ -94,11 +140,15 @@ function launchConfetti() {
   }
 }
 
-// ✅ CHECK ANSWER (WOW + 3 SEC FLOW)
+// ✅ CHECK ANSWER
 function checkAnswer() {
+
+  if (!gameActive) return;
+
   const userAns = parseFloat(document.getElementById("answer").value);
 
   if (userAns === correctAnswer) {
+
     score++;
     document.getElementById("score").innerText = "⭐ " + score;
 
@@ -111,26 +161,14 @@ function checkAnswer() {
     }, 800);
 
   } else {
-    lives--;
-    document.getElementById("lives").innerText = "❤️ " + lives;
-
-    showMessage("❌ Wrong!", "red");
-
-    setTimeout(() => {
-      showMessage("✔ Correct Answer: " + correctAnswer, "blue");
-    }, 600);
-
-    setTimeout(() => {
-      newQuestion();
-      startTimer();
-    }, 2500);
-
-    if (lives === 0) gameOver();
+    loseLife();
   }
 }
 
-// 💔 GAME OVER (STOP)
+// 💔 GAME OVER
 function gameOver() {
+
+  gameActive = false;
   clearInterval(timer);
 
   document.getElementById("question").innerText = "Game Over 💔";
