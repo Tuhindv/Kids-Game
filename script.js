@@ -1,24 +1,23 @@
-
 let num1, num2, operator;
 let score = 0;
-let lives = 5;
+let lives = 7;
 let timer;
-let time = 20;
+let time = 30;
 let correctAnswer = 0;
 let gameActive = false;
 
-// 💬 MESSAGE (WOW support)
+// ⭐ ADD THIS (NEW)
+let level = 1;
+
+// 💬 MESSAGE
 function showMessage(text, color, big = false) {
   const msg = document.getElementById("message");
 
   msg.innerText = text;
   msg.style.color = color;
 
-  if (big) {
-    msg.classList.add("wow");
-  } else {
-    msg.classList.remove("wow");
-  }
+  if (big) msg.classList.add("wow");
+  else msg.classList.remove("wow");
 
   clearTimeout(msg.clearTimer);
 
@@ -31,13 +30,16 @@ function showMessage(text, color, big = false) {
 // ▶ START GAME
 function startGame() {
   score = 0;
-  lives = 5;
+  lives = 7;
+  level = 1; // ⭐ RESET LEVEL
   gameActive = true;
 
   clearInterval(timer);
 
   document.getElementById("score").innerText = "⭐ 0";
-  document.getElementById("lives").innerText = "❤️ 5";
+  document.getElementById("lives").innerText = "❤️ 7";
+  document.getElementById("level").innerText = "🏆 L1"; // ⭐ RESET UI
+
   document.getElementById("gameOverBox").style.display = "none";
   document.getElementById("message").innerText = "";
 
@@ -45,11 +47,12 @@ function startGame() {
   startTimer();
 }
 
-// ⏱ TIMER (FIXED - NO NEGATIVE BUG)
+// ⏱ TIMER (SAFE)
 function startTimer() {
+
   clearInterval(timer);
 
-  time = 20;
+  time = 30;
   document.getElementById("timer").innerText = "⏱ " + time;
 
   timer = setInterval(() => {
@@ -74,12 +77,10 @@ function startTimer() {
   }, 1000);
 }
 
-// 🧠 NEW QUESTION
+// 🧠 QUESTION
 function newQuestion() {
 
-  clearInterval(timer); // IMPORTANT FIX
-
-  document.getElementById("message").innerText = "";
+  clearInterval(timer);
 
   num1 = Math.floor(Math.random() * 10) + 1;
   num2 = Math.floor(Math.random() * 10) + 1;
@@ -97,33 +98,10 @@ function newQuestion() {
   document.getElementById("answer").value = "";
 }
 
-// ❌ LOSE LIFE
-function loseLife() {
-
-  lives--;
-  document.getElementById("lives").innerText = "❤️ " + lives;
-
-  if (lives <= 0) {
-    gameOver();
-    return;
-  }
-
-  showMessage("❌ Wrong!", "red");
-
-  setTimeout(() => {
-    showMessage("✔ Correct: " + correctAnswer, "blue");
-  }, 600);
-
-  setTimeout(() => {
-    newQuestion();
-    startTimer();
-  }, 2000);
-}
-
-// 🎊 CONFETTI
+// 🎉 CONFETTI
 function launchConfetti() {
 
-  for (let i = 0; i < 30; i++) {
+  for (let i = 0; i < 50; i++) {
 
     const c = document.createElement("div");
     c.classList.add("confetti");
@@ -152,6 +130,12 @@ function checkAnswer() {
     score++;
     document.getElementById("score").innerText = "⭐ " + score;
 
+    // ⭐ LEVEL SYSTEM (ADD ONLY)
+    if (score % 5 === 0) {
+      level++;
+      document.getElementById("level").innerText = "🏆 L" + level;
+    }
+
     showMessage("🎉 EXCELLENT!", "green", true);
     launchConfetti();
 
@@ -165,6 +149,29 @@ function checkAnswer() {
   }
 }
 
+// ❌ LOSE LIFE
+function loseLife() {
+
+  lives--;
+  document.getElementById("lives").innerText = "❤️ " + lives;
+
+  if (lives <= 0) {
+    gameOver();
+    return;
+  }
+
+  showMessage("❌ Wrong! Try again 😊", "red");
+
+  setTimeout(() => {
+    showMessage("✔ Correct: " + correctAnswer, "blue");
+  }, 600);
+
+  setTimeout(() => {
+    newQuestion();
+    startTimer();
+  }, 2000);
+}
+
 // 💔 GAME OVER
 function gameOver() {
 
@@ -175,10 +182,5 @@ function gameOver() {
   document.getElementById("gameOverBox").style.display = "block";
 
   document.getElementById("finalScore").innerText =
-    "🏆 FINAL SCORE: " + score;
-}
-
-// 🔁 RESTART
-function restartGame() {
-  startGame();
+    "🏆 WOW! You got " + score + " stars ⭐";
 }
