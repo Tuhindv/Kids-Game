@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kids Math Game</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="app">
+    <h2>🧠 Kids Math Game</h2>
+
+    <div class="stats">
+      <div id="score">⭐ 0</div>
+      <div id="timer">⏱ 20</div>
+      <div id="lives">❤️ 5</div>
+    </div>
+
+    <div class="card">
+      <div id="question">Press Start</div>
+
+      <input type="number" step="0.1" id="answer" placeholder="Answer">
+
+      <div class="buttons">
+        <button onclick="startGame()">Start</button>
+        <button onclick="checkAnswer()">Submit</button>
+      </div>
+
+      <div id="message"></div>
+
+      <div id="gameOverBox">
+        <h3 id="finalScore"></h3>
+        <button onclick="restartGame()">🔁 New Game Start</button>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
